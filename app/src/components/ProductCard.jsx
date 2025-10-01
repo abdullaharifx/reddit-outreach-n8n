@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Edit, Trash2, Tag, DollarSign, Package } from 'lucide-react';
-import { truncateText } from '../utils/helpers';
+import { Edit, Trash2, DollarSign, Package, Globe } from 'lucide-react';
+import { truncateText, formatCurrency } from '../utils/helpers';
 
 const ProductCard = ({ product, onEdit, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false);
@@ -29,50 +29,34 @@ const ProductCard = ({ product, onEdit, onDelete }) => {
             </h3>
           </div>
           
-          <p className="text-gray-600 text-sm mb-3">
-            {truncateText(product.description, 120)}
-          </p>
+          {product.domain && (
+            <div className="flex items-center space-x-1 text-sm text-gray-500 mb-3">
+              <Globe className="w-4 h-4" />
+              <span>{product.domain}</span>
+            </div>
+          )}
 
-          <div className="space-y-2 mb-4">
-            <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-1">Key Problems:</h4>
+          {product.description && (
+            <p className="text-gray-600 text-sm mb-3">
+              {truncateText(product.description, 120)}
+            </p>
+          )}
+
+          {product.detail && (
+            <div className="mb-4">
+              <h4 className="text-sm font-medium text-gray-700 mb-1">Details:</h4>
               <p className="text-sm text-gray-600">
-                {truncateText(product.keyProblems, 100)}
+                {truncateText(product.detail, 150)}
               </p>
             </div>
+          )}
 
-            {product.targetKeywords && product.targetKeywords.length > 0 && (
-              <div>
-                <h4 className="text-sm font-medium text-gray-700 mb-1">Keywords:</h4>
-                <div className="flex flex-wrap gap-1">
-                  {product.targetKeywords.slice(0, 3).map((keyword, index) => (
-                    <span
-                      key={index}
-                      className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
-                    >
-                      <Tag className="w-3 h-3 mr-1" />
-                      {keyword}
-                    </span>
-                  ))}
-                  {product.targetKeywords.length > 3 && (
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
-                      +{product.targetKeywords.length - 3} more
-                    </span>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <div className="flex items-center justify-between text-sm text-gray-500">
+          <div className="flex items-center justify-between text-sm text-gray-500 pt-3 border-t border-gray-100">
             <div className="flex items-center space-x-4">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {product.category}
-              </span>
-              {product.price && (
-                <span className="inline-flex items-center text-gray-600">
+              {product.price !== null && product.price !== undefined && (
+                <span className="inline-flex items-center text-green-600 font-semibold">
                   <DollarSign className="w-4 h-4 mr-1" />
-                  {product.price}
+                  {formatCurrency(product.price)}
                 </span>
               )}
             </div>

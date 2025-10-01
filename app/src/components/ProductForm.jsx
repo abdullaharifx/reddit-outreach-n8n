@@ -7,25 +7,12 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
   const [formData, setFormData] = useState({
     name: initialData?.name || '',
     description: initialData?.description || '',
-    keyProblems: initialData?.keyProblems || '',
-    targetKeywords: initialData?.targetKeywords || '',
+    detail: initialData?.detail || '',
+    domain: initialData?.domain || '',
     price: initialData?.price || '',
-    category: initialData?.category || '',
   });
 
   const [errors, setErrors] = useState({});
-
-  const categories = [
-    'SaaS',
-    'E-commerce',
-    'Mobile App',
-    'Web Service',
-    'Digital Product',
-    'Physical Product',
-    'Consulting',
-    'Education',
-    'Other'
-  ];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -46,30 +33,33 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
   const validateForm = () => {
     const newErrors = {};
 
+    // Name validation - required
     if (!formData.name.trim()) {
       newErrors.name = 'Product name is required';
     }
 
-    if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
-    } else if (formData.description.length > 500) {
+    // Domain validation - required
+    if (!formData.domain.trim()) {
+      newErrors.domain = 'Domain is required';
+    }
+
+    // Description validation - optional but limit length
+    if (formData.description && formData.description.length > 500) {
       newErrors.description = 'Description must be less than 500 characters';
     }
 
-    if (!formData.keyProblems.trim()) {
-      newErrors.keyProblems = 'Key problems are required';
+    // Detail validation - optional but limit length
+    if (formData.detail && formData.detail.length > 1000) {
+      newErrors.detail = 'Detail must be less than 1000 characters';
     }
 
-    if (!formData.targetKeywords.trim()) {
-      newErrors.targetKeywords = 'Target keywords are required';
-    }
-
-    if (!formData.category) {
-      newErrors.category = 'Please select a category';
-    }
-
-    if (formData.price && (isNaN(formData.price) || parseFloat(formData.price) < 0)) {
-      newErrors.price = 'Price must be a valid positive number';
+    // Price validation - must be between 0 and 1,000,000
+    if (!formData.price) {
+      newErrors.price = 'Price is required';
+    } else if (isNaN(formData.price) || parseFloat(formData.price) < 0) {
+      newErrors.price = 'Price must be a positive number';
+    } else if (parseFloat(formData.price) > 1000000) {
+      newErrors.price = 'Price cannot exceed $1,000,000';
     }
 
     setErrors(newErrors);
@@ -85,9 +75,11 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
     }
 
     const submissionData = {
-      ...formData,
-      price: formData.price ? parseFloat(formData.price) : null,
-      targetKeywords: formData.targetKeywords.split(',').map(k => k.trim()).filter(k => k),
+      name: formData.name.trim(),
+      description: formData.description.trim(),
+      detail: formData.detail.trim(),
+      domain: formData.domain.trim(),
+      price: parseFloat(formData.price),
     };
 
     try {
@@ -95,10 +87,9 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
       setFormData({
         name: '',
         description: '',
-        keyProblems: '',
-        targetKeywords: '',
+        detail: '',
+        domain: '',
         price: '',
-        category: '',
       });
       setErrors({});
     } catch (error) {
@@ -153,8 +144,25 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
                 </div>
 
                 <div>
+                  <label htmlFor="domain" className="block text-sm font-medium text-gray-700">
+                    Domain *
+                  </label>
+                  <input
+                    type="text"
+                    id="domain"
+                    name="domain"
+                    value={formData.domain}
+                    onChange={handleInputChange}
+                    className={`mt-1 block w-full border ${errors.domain ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
+                    placeholder="e.g., example.com"
+                    disabled={isLoading}
+                  />
+                  {errors.domain && <p className="mt-1 text-sm text-red-600">{errors.domain}</p>}
+                </div>
+
+                <div>
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-                    Description * <span className="text-gray-500">({formData.description.length}/500)</span>
+                    Description <span className="text-gray-500">({formData.description.length}/500)</span>
                   </label>
                   <textarea
                     id="description"
@@ -163,7 +171,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
                     value={formData.description}
                     onChange={handleInputChange}
                     className={`mt-1 block w-full border ${errors.description ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
-                    placeholder="Describe your product"
+                    placeholder="Brief description of your product"
                     maxLength={500}
                     disabled={isLoading}
                   />
@@ -171,62 +179,26 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
                 </div>
 
                 <div>
-                  <label htmlFor="keyProblems" className="block text-sm font-medium text-gray-700">
-                    Key Problems It Solves *
+                  <label htmlFor="detail" className="block text-sm font-medium text-gray-700">
+                    Detailed Information <span className="text-gray-500">({formData.detail.length}/1000)</span>
                   </label>
                   <textarea
-                    id="keyProblems"
-                    name="keyProblems"
-                    rows={3}
-                    value={formData.keyProblems}
+                    id="detail"
+                    name="detail"
+                    rows={5}
+                    value={formData.detail}
                     onChange={handleInputChange}
-                    className={`mt-1 block w-full border ${errors.keyProblems ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
-                    placeholder="What problems does your product solve?"
+                    className={`mt-1 block w-full border ${errors.detail ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
+                    placeholder="Detailed product information, features, benefits, etc."
+                    maxLength={1000}
                     disabled={isLoading}
                   />
-                  {errors.keyProblems && <p className="mt-1 text-sm text-red-600">{errors.keyProblems}</p>}
-                </div>
-
-                <div>
-                  <label htmlFor="targetKeywords" className="block text-sm font-medium text-gray-700">
-                    Target Keywords * <span className="text-gray-500">(comma-separated)</span>
-                  </label>
-                  <input
-                    type="text"
-                    id="targetKeywords"
-                    name="targetKeywords"
-                    value={formData.targetKeywords}
-                    onChange={handleInputChange}
-                    className={`mt-1 block w-full border ${errors.targetKeywords ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
-                    placeholder="keyword1, keyword2, keyword3"
-                    disabled={isLoading}
-                  />
-                  {errors.targetKeywords && <p className="mt-1 text-sm text-red-600">{errors.targetKeywords}</p>}
-                </div>
-
-                <div>
-                  <label htmlFor="category" className="block text-sm font-medium text-gray-700">
-                    Category *
-                  </label>
-                  <select
-                    id="category"
-                    name="category"
-                    value={formData.category}
-                    onChange={handleInputChange}
-                    className={`mt-1 block w-full border ${errors.category ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
-                    disabled={isLoading}
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map(category => (
-                      <option key={category} value={category}>{category}</option>
-                    ))}
-                  </select>
-                  {errors.category && <p className="mt-1 text-sm text-red-600">{errors.category}</p>}
+                  {errors.detail && <p className="mt-1 text-sm text-red-600">{errors.detail}</p>}
                 </div>
 
                 <div>
                   <label htmlFor="price" className="block text-sm font-medium text-gray-700">
-                    Price (Optional)
+                    Price * <span className="text-gray-500">(max: $1,000,000)</span>
                   </label>
                   <div className="mt-1 relative rounded-md shadow-sm">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -241,6 +213,7 @@ const ProductForm = ({ isOpen, onClose, onSubmit, initialData = null, isLoading 
                       className={`block w-full pl-7 border ${errors.price ? 'border-red-300' : 'border-gray-300'} rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-reddit-orange focus:border-reddit-orange sm:text-sm`}
                       placeholder="0.00"
                       min="0"
+                      max="1000000"
                       step="0.01"
                       disabled={isLoading}
                     />

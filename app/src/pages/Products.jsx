@@ -43,21 +43,19 @@ const Products = () => {
         {
           id: 1,
           name: 'TaskMaster Pro',
+          domain: 'taskmaster.com',
           description: 'A comprehensive project management tool designed for small to medium businesses.',
-          keyProblems: 'Teams struggling with task organization, deadline management, and collaboration.',
-          targetKeywords: ['project management', 'task tracking', 'team collaboration'],
+          detail: 'TaskMaster Pro offers advanced features including task tracking, team collaboration, deadline management, progress visualization, custom workflows, and integrations with popular tools. Perfect for remote teams and startups looking to streamline their project management processes.',
           price: 29.99,
-          category: 'SaaS',
           createdAt: new Date().toISOString(),
         },
         {
           id: 2,
           name: 'CodeReview AI',
+          domain: 'codereview-ai.io',
           description: 'AI-powered code review assistant that helps developers catch bugs and improve code quality.',
-          keyProblems: 'Manual code reviews taking too long, missing critical bugs, inconsistent code quality.',
-          targetKeywords: ['code review', 'AI assistant', 'developer tools'],
+          detail: 'Leveraging cutting-edge AI technology, CodeReview AI automatically analyzes pull requests, identifies potential bugs, security vulnerabilities, and code smells. It learns from your team\'s coding standards and provides actionable feedback to improve code quality and reduce review time by 60%.',
           price: 49.99,
-          category: 'SaaS',
           createdAt: new Date().toISOString(),
         }
       ]);
