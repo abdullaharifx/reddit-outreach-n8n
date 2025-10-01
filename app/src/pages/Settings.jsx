@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings as SettingsIcon, Cog } from 'lucide-react';
+import { Cog } from 'lucide-react';
 
 const Settings = () => {
   return (

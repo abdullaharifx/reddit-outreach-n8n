@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import { 
-  ThumbsUp, 
-  ThumbsDown, 
   Edit3, 
   ExternalLink, 
   MessageSquare,

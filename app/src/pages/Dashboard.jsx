@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   MessageSquare, 
   Clock, 
@@ -96,11 +96,7 @@ const Dashboard = () => {
     },
   ];
 
-  useEffect(() => {
-    fetchComments();
-  }, []);
-
-  const fetchComments = async () => {
+  const fetchComments = useCallback(async () => {
     try {
       setLoading(true);
       const response = await commentsAPI.getPending();
@@ -112,7 +108,11 @@ const Dashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchComments();
+  }, [fetchComments]);
 
   const handleRefresh = async () => {
     setRefreshing(true);
