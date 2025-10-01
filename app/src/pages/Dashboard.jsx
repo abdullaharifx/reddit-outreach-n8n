@@ -14,19 +14,8 @@ import CommentCard from '../components/CommentCard';
 import LoadingSpinner from '../components/LoadingSpinner';
 import toast from 'react-hot-toast';
 
-const Dashboard = () => {
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [selectedComments, setSelectedComments] = useState(new Set());
-  const [filters, setFilters] = useState({
-    product: '',
-    subreddit: '',
-    minScore: 0,
-  });
-
-  // Mock data for development
-  const mockComments = [
+// Mock data for development - moved outside component to avoid re-creation
+const mockComments = [
     {
       id: 1,
       postTitle: "Looking for a project management tool for my startup",
@@ -64,6 +53,17 @@ const Dashboard = () => {
       createdAt: new Date().toISOString(),
     },
   ];
+
+const Dashboard = () => {
+  const [comments, setComments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [selectedComments, setSelectedComments] = useState(new Set());
+  const [filters, setFilters] = useState({
+    product: '',
+    subreddit: '',
+    minScore: 0,
+  });
 
   const stats = [
     {
